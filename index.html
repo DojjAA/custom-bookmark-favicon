@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicons/purple.svg">
+  <title>Bookmark Favicons</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px 20px;
+      color: #333;
+      background: #fafafa;
+    }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    .subtitle { color: #888; margin-bottom: 24px; font-size: 14px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px 12px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      text-decoration: none;
+      color: #555;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .card img { width: 48px; height: 48px; margin-bottom: 8px; }
+    .loading { text-align: center; color: #aaa; padding: 40px; }
+  </style>
+</head>
+<body>
+  <h1>🎨 Bookmark Favicons</h1>
+  <p class="subtitle"><span id="count">—</span> favicons available. Click one, then drag the tab to your bookmarks bar.</p>
+  <div class="grid" id="grid"><div class="loading">Loading…</div></div>
+
+  <script>
+    var api = 'https://api.github.com/repos/DojjAA/custom-bookmark-favicon/contents/favicons';
+    fetch(api)
+      .then(function(r) { return r.json(); })
+      .then(function(files) {
+        var svgs = files.filter(function(f) { return f.name.endsWith('.svg'); });
+        document.getElementById('count').textContent = svgs.length;
+        var html = '';
+        svgs.forEach(function(f) {
+          var name = f.name.replace('.svg', '');
+          html += '<a class="card" href="favicon.html?name=' + name + '">'
+            + '<img src="favicons/' + f.name + '" alt="' + name + '">'
+            + '<div>' + name.charAt(0).toUpperCase() + name.slice(1) + '</div>'
+            + '</a>';
+        });
+        document.getElementById('grid').innerHTML = html;
+      })
+      .catch(function() {
+        document.getElementById('grid').innerHTML =
+          '<div class="loading">Could not load favicons. Try again later.</div>';
+      });
+  </script>
+</body>
+</html>
